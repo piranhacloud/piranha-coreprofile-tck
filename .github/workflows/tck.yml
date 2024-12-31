@@ -1,7 +1,7 @@
 name: tck
 on: 
   schedule:
-  - cron: "0 0 * * *"
+  - cron: "0 0 * * 0"
   workflow_dispatch:
 jobs:
   annotations:
@@ -20,6 +20,7 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
+        mvn -N install
         cd annotations
         mvn -B -ntp verify
     - name: Test Summary
@@ -43,6 +44,7 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
+        mvn -N install
         cd inject
         mvn -B -ntp verify
     - name: Test Summary
@@ -66,10 +68,37 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
+        mvn -N install
         cd jsonb
         mvn -B -ntp verify
     - name: Test Summary
       uses: test-summary/action@v2
       with:
         paths: "jsonb/installer/target/tck/bin/target/surefire-reports/TEST-*.xml"
+      if: always()
+  jsonp:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '21' ]
+        os: [ubuntu-latest]
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v4
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+    - name: Run TCK
+      run: |
+        mvn -N install
+        cd jsonp
+        mvn -B -ntp verify
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: |
+          jsonp/installer/target/tck/bin/tck-tests/target/surefire-reports/TEST-*.xml
+          jsonp/installer/target/tck/bin/tck-tests-pluggability/target/surefire-reports/TEST-*.xml
       if: always()
