@@ -28,6 +28,30 @@ jobs:
       with:
         paths: "annotations/runner/target/failsafe-reports/*IT.xml"
       if: always()
+  coreprofile:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '21' ]
+        os: [ubuntu-latest]
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v4
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+    - name: Run TCK
+      run: |
+        mvn -N install
+        cd coreprofile
+        mvn -B -Dmaven.test.failure.ignore=true -ntp verify        
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: "coreprofile/runner/target/failsafe-reports/**/TEST-*.xml"
+      if: always()
   inject:
     runs-on: ${{ matrix.os }}
     strategy:

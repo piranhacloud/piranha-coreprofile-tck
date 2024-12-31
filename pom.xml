@@ -13,7 +13,11 @@
     <properties>
         <!-- dependencies -->
         <annotations.tck.version>3.0.0</annotations.tck.version>
+        <arquillian.version>1.9.1.Final</arquillian.version>
+        <commons-httpclient.version>3.1</commons-httpclient.version>
+        <coreprofile.tck.version>11.0.0</coreprofile.tck.version>
         <inject.tck.version>2.0.2</inject.tck.version>
+        <glassfish-client-ee11.version>1.6.1</glassfish-client-ee11.version>
         <jsonb.tck.version>3.0.0</jsonb.tck.version>
         <jsonp.tck.version>2.1.1</jsonp.tck.version>
         <junit.version>5.11.4</junit.version>
@@ -21,6 +25,7 @@
         <weld.version>6.0.0.Final</weld.version>
         <yasson.version>3.0.4</yasson.version>
         <!-- other -->
+        <java.version>21</java.version>
         <piranha.version>25.1.0-SNAPSHOT</piranha.version>
         <!-- plugins -->
         <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
@@ -29,6 +34,7 @@
     </properties>
     <modules>
         <module>annotations</module>
+        <module>coreprofile</module>
         <module>inject</module>
         <module>jsonb</module>
         <module>jsonp</module>
@@ -49,6 +55,25 @@
             </plugins>
         </pluginManagement>
     </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
+                <version>${junit.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
+                <version>${junit.version}</version>
+            </dependency>        
+        </dependencies>
+    </dependencyManagement>
     <repositories>
         <repository>
             <id>jakartaee-staging</id>
