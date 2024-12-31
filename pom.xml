@@ -14,8 +14,10 @@
         <!-- dependencies -->
         <annotations.tck.version>3.0.0</annotations.tck.version>
         <inject.tck.version>2.0.2</inject.tck.version>
+        <jsonb.tck.version>3.0.0</jsonb.tck.version>
         <junit.version>5.11.4</junit.version>
         <weld.version>6.0.0.Final</weld.version>
+        <yasson.version>3.0.4</yasson.version>
         <!-- other -->
         <piranha.version>25.1.0-SNAPSHOT</piranha.version>
         <!-- plugins -->
@@ -26,6 +28,7 @@
     <modules>
         <module>annotations</module>
         <module>inject</module>
+        <module>jsonb</module>
     </modules>
     <build>
         <pluginManagement>

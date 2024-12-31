@@ -20,9 +20,56 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
+        cd annotations
         mvn -B -ntp verify
     - name: Test Summary
       uses: test-summary/action@v2
       with:
         paths: "annotations/runner/target/failsafe-reports/*IT.xml"
+      if: always()
+  inject:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '21' ]
+        os: [ubuntu-latest]
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v4
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+    - name: Run TCK
+      run: |
+        cd inject
+        mvn -B -ntp verify
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: "inject/installer/target/tck/example/target/surefire-reports/TEST-*.xml"
+      if: always()
+  jsonb:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '21' ]
+        os: [ubuntu-latest]
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v4
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+    - name: Run TCK
+      run: |
+        cd jsonb
+        mvn -B -ntp verify
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: "jsonb/installer/target/tck/bin/target/surefire-reports/TEST-*.xml"
       if: always()
