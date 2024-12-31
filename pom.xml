@@ -14,6 +14,7 @@
         <!-- dependencies -->
         <annotations.tck.version>3.0.0</annotations.tck.version>
         <arquillian.version>1.9.1.Final</arquillian.version>
+        <cdi.tck.version>4.1.0</cdi.tck.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <coreprofile.tck.version>11.0.0</coreprofile.tck.version>
         <hamcrest.version>3.0</hamcrest.version>
@@ -36,6 +37,7 @@
     </properties>
     <modules>
         <module>annotations</module>
+        <module>cdi</module>
         <module>coreprofile</module>
         <module>inject</module>
         <module>jsonb</module>
