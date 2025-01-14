@@ -3,6 +3,11 @@ on:
   schedule:
   - cron: "0 0 * * *"
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Piranha Version'
+        required: true
+        default: '25.2.0-SNAPSHOT'
 jobs:
   annotations:
     runs-on: ${{ matrix.os }}
@@ -168,9 +173,10 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
-        mvn -N install
+        mvn -N -T 1 install
+        mvn dependency:get -N -T 1 -Dartifact=cloud.piranha.dist:piranha-dist-coreprofile:$VERSION:jar -DremoteRepositories=oss::default::https://oss.sonatype.org/content/repositories/snapshots/ 
         cd rest
-        mvn -B -ntp -T 1 verify        
+        mvn -B -Dpiranha.version=$VERSION -ntp -T 1 verify        
     - name: Test Summary
       uses: test-summary/action@v2
       id: test_summary
