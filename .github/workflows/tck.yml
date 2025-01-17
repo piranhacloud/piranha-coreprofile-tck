@@ -173,6 +173,7 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: Run TCK
       run: |
+        export VERSION=${{ github.event.inputs.version }}
         mvn -N -T 1 install
         mvn dependency:get -N -T 1 -Dartifact=cloud.piranha.dist:piranha-dist-coreprofile:$VERSION:jar -DremoteRepositories=oss::default::https://oss.sonatype.org/content/repositories/snapshots/ 
         cd rest
