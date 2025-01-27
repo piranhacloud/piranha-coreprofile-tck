@@ -73,11 +73,22 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.java }}
+    - name: Checkout Piranha Sources
+      uses: actions/checkout@v4
+      with:
+        repository: piranhacloud/piranha
+        token: ${{ secrets.GIT_PASSWORD }}
+        path: piranha
+        ref: ${{ github.event.inputs.branch }}
     - name: Run TCK
       run: |
+        cd piranha
+        export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
+        mvn -B -DskipTests=true -DskipITs=true -ntp clean install
+        cd ..
         mvn -N install
         cd coreprofile
-        mvn -B -Dmaven.test.failure.ignore=true -ntp verify        
+        mvn -B -Dpiranha.version=$VERSION -ntp verify        
     - name: Test Summary
       uses: test-summary/action@v2
       with:
