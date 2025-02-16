@@ -1,15 +1,13 @@
 name: tck
 on: 
-  schedule:
-  - cron: "0 0 * * *"
   workflow_dispatch:
     inputs:
       branch:
-        description: 'Piranha Branch'
+        description: 'Piranha Branch / Tag'
         required: true
         default: 'current'
 jobs:
-  annotations:
+  tck:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -23,15 +21,22 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.java }}
+    - name: Checkout Piranha Sources
+      uses: actions/checkout@v4
+      with:
+        repository: piranhacloud/piranha
+        path: piranha
+        ref: ${{ github.event.inputs.branch }}
     - name: Run TCK
       run: |
-        mvn -N install
-        cd annotations
-        mvn -B -ntp verify
-    - name: Test Summary
+        cd piranha
+        mvn -B -DskipTests=true -DskipITs=true -ntp -P tck install
+        cd test/tck/coreprofile
+        mvn -B -fae -ntp install
+    - name: Annotations TCK Test Summary
       uses: test-summary/action@v2
       with:
-        paths: "annotations/runner/target/failsafe-reports/*IT.xml"
+        paths: "piranha/test/tck/coreprofile/annotations/runner/target/failsafe-reports/*IT.xml"
       if: always()
   cdi:
     runs-on: ${{ matrix.os }}
