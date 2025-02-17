@@ -37,13 +37,7 @@
         <sigtest-maven-plugin.version>2.4</sigtest-maven-plugin.version>
     </properties>
     <modules>
-        <module>annotations</module>
         <module>cdi</module>
-        <module>coreprofile</module>
-        <module>inject</module>
-        <module>jsonb</module>
-        <module>jsonp</module>
-        <module>rest</module>
     </modules>
     <build>
         <pluginManagement>
