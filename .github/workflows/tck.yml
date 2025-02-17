@@ -69,41 +69,37 @@ jobs:
   #         cdi/runner/core/target/surefire-reports/junitreports/TEST-*.xml
   #         cdi/runner/model/target/surefire-reports/TEST-*.xml
   #     if: always()
-  # coreprofile:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       java: [ '21' ]
-  #       os: [ubuntu-latest]
-  #   steps:
-  #   - name: Checkout Sources
-  #     uses: actions/checkout@v4
-  #   - name: Set up Java ${{ matrix.java }}
-  #     uses: actions/setup-java@v4
-  #     with:
-  #       distribution: 'temurin'
-  #       java-version: ${{ matrix.java }}
-  #   - name: Checkout Piranha Sources
-  #     uses: actions/checkout@v4
-  #     with:
-  #       repository: piranhacloud/piranha
-  #       token: ${{ secrets.GIT_PASSWORD }}
-  #       path: piranha
-  #       ref: ${{ github.event.inputs.branch }}
-  #   - name: Run TCK
-  #     run: |
-  #       cd piranha
-  #       export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
-  #       mvn -B -DskipTests=true -DskipITs=true -ntp clean install
-  #       cd ..
-  #       mvn -N install
-  #       cd coreprofile
-  #       mvn -B -Dpiranha.version=$VERSION -ntp verify        
-  #   - name: Test Summary
-  #     uses: test-summary/action@v2
-  #     with:
-  #       paths: "coreprofile/runner/target/failsafe-reports/**/TEST-*.xml"
-  #     if: always()
+  coreprofile:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        java: [ '21' ]
+        os: [ubuntu-latest]
+    steps:
+    - name: Checkout Sources
+      uses: actions/checkout@v4
+    - name: Set up Java ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.java }}
+    - name: Checkout Piranha Sources
+      uses: actions/checkout@v4
+      with:
+        repository: piranhacloud/piranha
+        path: piranha
+        ref: ${{ github.event.inputs.branch }}
+    - name: Run TCK
+      run: |
+        cd piranha
+        mvn -B -DskipTests=true -DskipITs=true -ntp install
+        cd test/tck/coreprofile/coreprofile
+        mvn -B -ntp install
+    - name: Test Summary
+      uses: test-summary/action@v2
+      with:
+        paths: "piranha/test/tck/coreprofile/coreprofile/runner/target/failsafe-reports/**/TEST-*.xml"
+      if: always()
   jsonp:
     runs-on: ${{ matrix.os }}
     strategy:
