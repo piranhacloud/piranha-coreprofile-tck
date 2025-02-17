@@ -7,146 +7,103 @@ on:
         required: true
         default: 'current'
 jobs:
-  tck:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
-    - name: Checkout Piranha Sources
-      uses: actions/checkout@v4
-      with:
-        repository: piranhacloud/piranha
-        path: piranha
-        ref: ${{ github.event.inputs.branch }}
-    - name: Run TCK
-      run: |
-        cd piranha
-        mvn -B -DskipTests=true -DskipITs=true -ntp -P tck install
-        cd test/tck/coreprofile
-        mvn -B -fae -ntp install
-    - name: Annotations TCK Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: "piranha/test/tck/coreprofile/annotations/runner/target/failsafe-reports/*IT.xml"
-      if: always()
-  cdi:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
-    - name: Run TCK
-      run: |
-        mvn -N install
-        cd cdi
-        mvn -B -ntp -T 1 verify
-    - name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: |
-          cdi/runner/core/target/surefire-reports/junitreports/TEST-*.xml
-          cdi/runner/model/target/surefire-reports/TEST-*.xml
-      if: always()
-  coreprofile:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
-    - name: Checkout Piranha Sources
-      uses: actions/checkout@v4
-      with:
-        repository: piranhacloud/piranha
-        token: ${{ secrets.GIT_PASSWORD }}
-        path: piranha
-        ref: ${{ github.event.inputs.branch }}
-    - name: Run TCK
-      run: |
-        cd piranha
-        export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
-        mvn -B -DskipTests=true -DskipITs=true -ntp clean install
-        cd ..
-        mvn -N install
-        cd coreprofile
-        mvn -B -Dpiranha.version=$VERSION -ntp verify        
-    - name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: "coreprofile/runner/target/failsafe-reports/**/TEST-*.xml"
-      if: always()
-  inject:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
-    - name: Run TCK
-      run: |
-        mvn -N install
-        cd inject
-        mvn -B -ntp verify
-    - name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: "inject/installer/target/tck/example/target/surefire-reports/TEST-*.xml"
-      if: always()
-  jsonb:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
-    - name: Run TCK
-      run: |
-        mvn -N install
-        cd jsonb
-        mvn -B -ntp verify
-    - name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: "jsonb/installer/target/tck/bin/target/surefire-reports/TEST-*.xml"
-      if: always()
+  # tck:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       java: [ '21' ]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - name: Checkout Sources
+  #     uses: actions/checkout@v4
+  #   - name: Set up Java ${{ matrix.java }}
+  #     uses: actions/setup-java@v4
+  #     with:
+  #       distribution: 'temurin'
+  #       java-version: ${{ matrix.java }}
+  #   - name: Checkout Piranha Sources
+  #     uses: actions/checkout@v4
+  #     with:
+  #       repository: piranhacloud/piranha
+  #       path: piranha
+  #       ref: ${{ github.event.inputs.branch }}
+  #   - name: Run TCK
+  #     run: |
+  #       cd piranha
+  #       mvn -B -DskipTests=true -DskipITs=true -ntp -P tck install
+  #       cd test/tck/coreprofile
+  #       mvn -B -fae -ntp install
+  #   - name: Annotations TCK Test Summary
+  #     uses: test-summary/action@v2
+  #     with:
+  #       paths: "piranha/test/tck/coreprofile/annotations/runner/target/failsafe-reports/*IT.xml"
+  #     if: always()
+  #   - name: Inject TCK Test Summary
+  #     uses: test-summary/action@v2
+  #     with:
+  #       paths: "piranha/test/tck/coreprofile/inject/installer/target/tck/example/target/surefire-reports/TEST-*.xml"
+  #     if: always()
+  # cdi:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       java: [ '21' ]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - name: Checkout Sources
+  #     uses: actions/checkout@v4
+  #   - name: Set up Java ${{ matrix.java }}
+  #     uses: actions/setup-java@v4
+  #     with:
+  #       distribution: 'temurin'
+  #       java-version: ${{ matrix.java }}
+  #   - name: Run TCK
+  #     run: |
+  #       mvn -N install
+  #       cd cdi
+  #       mvn -B -ntp -T 1 verify
+  #   - name: Test Summary
+  #     uses: test-summary/action@v2
+  #     with:
+  #       paths: |
+  #         cdi/runner/core/target/surefire-reports/junitreports/TEST-*.xml
+  #         cdi/runner/model/target/surefire-reports/TEST-*.xml
+  #     if: always()
+  # coreprofile:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       java: [ '21' ]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - name: Checkout Sources
+  #     uses: actions/checkout@v4
+  #   - name: Set up Java ${{ matrix.java }}
+  #     uses: actions/setup-java@v4
+  #     with:
+  #       distribution: 'temurin'
+  #       java-version: ${{ matrix.java }}
+  #   - name: Checkout Piranha Sources
+  #     uses: actions/checkout@v4
+  #     with:
+  #       repository: piranhacloud/piranha
+  #       token: ${{ secrets.GIT_PASSWORD }}
+  #       path: piranha
+  #       ref: ${{ github.event.inputs.branch }}
+  #   - name: Run TCK
+  #     run: |
+  #       cd piranha
+  #       export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
+  #       mvn -B -DskipTests=true -DskipITs=true -ntp clean install
+  #       cd ..
+  #       mvn -N install
+  #       cd coreprofile
+  #       mvn -B -Dpiranha.version=$VERSION -ntp verify        
+  #   - name: Test Summary
+  #     uses: test-summary/action@v2
+  #     with:
+  #       paths: "coreprofile/runner/target/failsafe-reports/**/TEST-*.xml"
+  #     if: always()
   jsonp:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -161,56 +118,63 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: ${{ matrix.java }}
-    - name: Run TCK
-      run: |
-        mvn -N install
-        cd jsonp
-        mvn -B -ntp verify
-    - name: Test Summary
-      uses: test-summary/action@v2
-      with:
-        paths: |
-          jsonp/installer/target/tck/bin/tck-tests/target/surefire-reports/TEST-*.xml
-          jsonp/installer/target/tck/bin/tck-tests-pluggability/target/surefire-reports/TEST-*.xml
-      if: always()
-  rest:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        java: [ '21' ]
-        os: [ubuntu-latest]
-    steps:
-    - name: Checkout Sources
-      uses: actions/checkout@v4
-    - name: Set up Java ${{ matrix.java }}
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: ${{ matrix.java }}
     - name: Checkout Piranha Sources
       uses: actions/checkout@v4
       with:
         repository: piranhacloud/piranha
-        token: ${{ secrets.GIT_PASSWORD }}
         path: piranha
         ref: ${{ github.event.inputs.branch }}
     - name: Run TCK
       run: |
         cd piranha
-        export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
-        mvn -B -DskipTests=true -DskipITs=true -ntp clean install
-        cd ..
-        mvn -B -N install
-        cd rest
-        mvn -B -Dpiranha.version=$VERSION -ntp verify        
+        mvn -B -DskipTests=true -DskipITs=true -ntp install
+        cd test/tck/coreprofile/jsonp
+        mvn -B -ntp install
     - name: Test Summary
       uses: test-summary/action@v2
-      id: test_summary
       with:
-        paths: "rest/runner/target/failsafe-reports/**/TEST-*.xml"
-        output: test-summary.md
+        paths: |
+          piranha/test/tck/coreprofile/jsonp/installer/target/tck/bin/tck-tests/target/surefire-reports/TEST-*.xml
+          piranha/test/tck/coreprofile/jsonp/installer/target/tck/bin/tck-tests-pluggability/target/surefire-reports/TEST-*.xml
       if: always()
-    - name: Job Summary
-      run: |
-        echo "${{ steps.test_summary.outputs.passed }} out of ${{ steps.test_summary.outputs.total }} tests passed" >> $GITHUB_STEP_SUMMARY
-      if: always()
+  # rest:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       java: [ '21' ]
+  #       os: [ubuntu-latest]
+  #   steps:
+  #   - name: Checkout Sources
+  #     uses: actions/checkout@v4
+  #   - name: Set up Java ${{ matrix.java }}
+  #     uses: actions/setup-java@v4
+  #     with:
+  #       distribution: 'temurin'
+  #       java-version: ${{ matrix.java }}
+  #   - name: Checkout Piranha Sources
+  #     uses: actions/checkout@v4
+  #     with:
+  #       repository: piranhacloud/piranha
+  #       token: ${{ secrets.GIT_PASSWORD }}
+  #       path: piranha
+  #       ref: ${{ github.event.inputs.branch }}
+  #   - name: Run TCK
+  #     run: |
+  #       cd piranha
+  #       export VERSION=$(mvn -B -Dexpression=project.version -DforceStdout -q help:evaluate)
+  #       mvn -B -DskipTests=true -DskipITs=true -ntp clean install
+  #       cd ..
+  #       mvn -B -N install
+  #       cd rest
+  #       mvn -B -Dpiranha.version=$VERSION -ntp verify        
+  #   - name: Test Summary
+  #     uses: test-summary/action@v2
+  #     id: test_summary
+  #     with:
+  #       paths: "rest/runner/target/failsafe-reports/**/TEST-*.xml"
+  #       output: test-summary.md
+  #     if: always()
+  #   - name: Job Summary
+  #     run: |
+  #       echo "${{ steps.test_summary.outputs.passed }} out of ${{ steps.test_summary.outputs.total }} tests passed" >> $GITHUB_STEP_SUMMARY
+  #     if: always()
