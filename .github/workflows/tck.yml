@@ -39,7 +39,7 @@ jobs:
       with:
         paths: "piranha/test/tck/coreprofile/annotations/runner/target/failsafe-reports/*IT.xml"
       if: always()
-   cdi:
+  cdi:
     if: ${{ always() }} && github.repository == 'piranhacloud/piranha'
     runs-on: ${{ matrix.os }}
     strategy:
