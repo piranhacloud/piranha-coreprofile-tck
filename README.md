@@ -1,6 +1,8 @@
 Piranha Core Profile self-certification
 =======================================
 
+_This repository is no longer being maintained now that all contributions flow through Eclipse_
+
 This project is used to post the results of the self-certification of Piranha Core Profile against the relevant Jakarta EE TCKs.
 
 For self-certification to be successful the following TCK should pass:
